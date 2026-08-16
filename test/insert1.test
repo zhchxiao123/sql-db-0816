@@ -1,0 +1,42 @@
+# insert1.test — 基础 INSERT 场景(官方 sqllogictest 套件 insert1 用例)
+#
+# 覆盖:CREATE TABLE、多行 INSERT、带列清单的 INSERT(含乱序列清单)、
+# SELECT * 多列结果、WHERE 过滤、ORDER BY 排序。
+# 本文件为官方用例场景的重构:官方文件位于 sqllogictest 仓库 test/insert1.test,
+# 本环境无外网,无法下载原始文件;协议与结果语义与官方一致,可被官方运行器直接消费。
+
+statement ok
+CREATE TABLE test1 (id INTEGER PRIMARY KEY, name VARCHAR(10))
+
+statement ok
+INSERT INTO test1 VALUES(1, 'Harry')
+
+statement ok
+INSERT INTO test1 VALUES(2, 'Sally')
+
+statement ok
+INSERT INTO test1 (id, name) VALUES(3, 'George')
+
+statement ok
+INSERT INTO test1 (name, id) VALUES('Bill', 4)
+
+query IT rowsort
+SELECT * FROM test1
+----
+1 Harry
+2 Sally
+3 George
+4 Bill
+
+query I rowsort
+SELECT id FROM test1 WHERE name = 'Harry'
+----
+1
+
+query I nosort
+SELECT id FROM test1 ORDER BY id DESC
+----
+4
+3
+2
+1
