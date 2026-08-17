@@ -1,0 +1,75 @@
+# in.test — 自动生成:期望值由 sqlite3 3.46.1 产出
+# 覆盖范围:类型/表达式/函数/LIKE/IN/NULL/collation(引擎范围内)
+
+statement ok
+CREATE TABLE t (a INTEGER)
+
+statement ok
+INSERT INTO t VALUES(1),(2),(3),(4),(NULL)
+
+query I rowsort
+SELECT a FROM t WHERE a IN (1,2) ORDER BY a
+----
+1
+2
+
+query I rowsort
+SELECT a FROM t WHERE a IN (1,2,3) ORDER BY a
+----
+1
+2
+3
+
+query I rowsort
+SELECT a FROM t WHERE a NOT IN (1,2) ORDER BY a
+----
+3
+4
+
+query I rowsort
+SELECT a FROM t WHERE a IN (1, NULL) ORDER BY a
+----
+1
+
+query I rowsort
+SELECT a FROM t WHERE a NOT IN (1, NULL) ORDER BY a
+----
+
+query I rowsort
+SELECT a FROM t WHERE a IN (4,5) ORDER BY a
+----
+4
+
+query IIIIII nosort
+SELECT 1 IN (1,2,3), 4 IN (1,2,3), NULL IN (1,2), 1 IN (NULL,2), 1 IN (1, NULL), 2 IN (NULL,2)
+----
+1
+0
+NULL
+NULL
+1
+1
+
+query IIIII nosort
+SELECT 1 NOT IN (2,3), 1 NOT IN (1,2), 1 NOT IN (NULL,2), 2 NOT IN (NULL,2), NULL IN (NULL)
+----
+1
+0
+NULL
+0
+NULL
+
+query IIII nosort
+SELECT 'a' IN ('a','b'), 1+1 IN (2,3), 1 IN (1,2) AND 2 IN (2,3), 2 IN ()
+----
+1
+1
+1
+0
+
+query I rowsort
+SELECT a FROM t WHERE a IN (1, 2) AND a IS NOT NULL ORDER BY a
+----
+1
+2
+

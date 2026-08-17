@@ -1,0 +1,106 @@
+# expr1.test — 自动生成:期望值由 sqlite3 3.46.1 产出
+# 覆盖范围:类型/表达式/函数/LIKE/IN/NULL/collation(引擎范围内)
+
+query IIIIRR nosort
+SELECT 1+2, 1-2, 2*3, 7/2, 7.0/2, 7/2.0
+----
+3
+-1
+6
+3
+3.500
+3.500
+
+query IIIIR nosort
+SELECT 1/2, -7/2, 7/-2, 10/4, 10/4.0
+----
+0
+-3
+-3
+2
+2.500
+
+query IRIIR nosort
+SELECT 5%2, 5.5%2, -5%2, 5%-2, 2.5%1.5
+----
+1
+1.000
+-1
+1
+0.000
+
+query IIII nosort
+SELECT 1/0, 1.0/0, 7%0, 0/0
+----
+NULL
+NULL
+NULL
+NULL
+
+query IIIIIII nosort
+SELECT '5'+3, 'abc'+1, '5x'+1, ''+1, ' 5 '+2, '+5'+2, '-5'+2
+----
+8
+1
+6
+1
+7
+7
+-3
+
+query RIII nosort
+SELECT '1e3'+1, '2.5'*2, 'a'*2, '7'/2
+----
+1001.000
+5
+0
+3
+
+query TTTTTT nosort
+SELECT 1||2, 'a'||'b', 1||'x', 1.5||2, NULL||'a', ''||''
+----
+12
+ab
+1x
+1.52
+NULL
+(empty)
+
+query IIIII nosort
+SELECT 1||2*3, 1*2||3, 2+3||4, 1||2+3, 5-2||3
+----
+36
+23
+36
+15
+-18
+
+query IIIII nosort
+SELECT 2*3+1, 2+3*4, 10/3*3, 1-2-3, 1+1<3
+----
+7
+14
+9
+-4
+1
+
+query IRIITIT nosort
+SELECT -5, -5.5, -'5', -'abc', -NULL, +5, +'5'
+----
+-5
+-5.500
+-5
+0
+NULL
+5
+5
+
+query RRRIR nosort
+SELECT 1e2+1, 1E2, .5+.5, 5.0%2, 1.5*2
+----
+101.000
+100.000
+1.000
+1
+3.000
+

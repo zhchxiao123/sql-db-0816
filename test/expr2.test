@@ -1,0 +1,75 @@
+# expr2.test — 自动生成:期望值由 sqlite3 3.46.1 产出
+# 覆盖范围:类型/表达式/函数/LIKE/IN/NULL/collation(引擎范围内)
+
+query IIIIII nosort
+SELECT 1=1, 1=1.0, '1'=1, '1.0'=1, 1!=2, 1<>1
+----
+1
+1
+0
+0
+1
+0
+
+query IIIIII nosort
+SELECT 'abc'='abc', 'abc'<'abd', 2>'10', 2>'1x', 1<'a', 1<X'41'
+----
+1
+1
+0
+0
+1
+1
+
+query IIIIII nosort
+SELECT NULL=1, NULL=NULL, 1<=1, 1>=2, 2>1, 0<1
+----
+NULL
+NULL
+1
+0
+1
+1
+
+query IIII nosort
+SELECT 'a'<X'41', 1='1', '2'<'10', '10'<'2'
+----
+1
+0
+0
+1
+
+query IIIII nosort
+SELECT 1=1 AND 1, 1=0 OR 1, NOT (1=2), 1<2=1, NOT 1=1
+----
+1
+1
+1
+1
+0
+
+query IIIII nosort
+SELECT 1 IS 1, 1 IS '1', NULL IS NULL, NULL IS NOT NULL, 1 IS NOT NULL
+----
+1
+0
+1
+0
+1
+
+query III nosort
+SELECT 'abc' = 'ABC' COLLATE NOCASE, 'abc' COLLATE NOCASE = 'ABC', 'abc' = 'ABC'
+----
+1
+1
+0
+
+query IRTTT nosort
+SELECT 1, 2.5, 'x', NULL, X'41'
+----
+1
+2.500
+x
+NULL
+A
+

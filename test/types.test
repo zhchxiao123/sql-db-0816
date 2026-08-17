@@ -1,0 +1,99 @@
+# types.test — 自动生成:期望值由 sqlite3 3.46.1 产出
+# 覆盖范围:类型/表达式/函数/LIKE/IN/NULL/collation(引擎范围内)
+
+statement ok
+CREATE TABLE t1 (a INTEGER, b REAL, c TEXT, d BLOB, e NUMERIC, f)
+
+statement ok
+INSERT INTO t1 VALUES(1, 2.5, 'abc', X'4142', 3.25, 'x')
+
+statement ok
+INSERT INTO t1 VALUES('123', '456', 789, 'text', '12.5', 42)
+
+statement ok
+INSERT INTO t1 VALUES('12.5', 7, 1.5, X'00FF', 99, NULL)
+
+statement ok
+INSERT INTO t1 VALUES(NULL, NULL, NULL, NULL, NULL, NULL)
+
+query TTTTTT nosort
+SELECT typeof(a), typeof(b), typeof(c), typeof(d), typeof(e), typeof(f) FROM t1 WHERE a IS NOT NULL ORDER BY rowid
+----
+integer
+real
+text
+blob
+real
+text
+integer
+real
+text
+text
+real
+integer
+real
+real
+text
+blob
+integer
+null
+
+query IRTTIT nosort
+SELECT a, b, c, d, e, f FROM t1 ORDER BY rowid
+----
+1
+2.500
+abc
+AB
+3
+x
+123
+456.000
+789
+text
+12
+42
+12
+7.000
+1.5
+@@
+99
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+
+query I rowsort
+SELECT a FROM t1 WHERE a > 0 ORDER BY a
+----
+1
+12
+123
+
+query R rowsort
+SELECT b FROM t1 WHERE b > 0 ORDER BY b
+----
+2.500
+456.000
+7.000
+
+query TTTTT nosort
+SELECT typeof(1), typeof(1.5), typeof('x'), typeof(X'41'), typeof(NULL)
+----
+integer
+real
+text
+blob
+null
+
+query TTTT nosort
+SELECT typeof(CAST(1 AS TEXT)), typeof(CAST('1' AS INTEGER)), typeof(CAST(1 AS REAL)), typeof(CAST('x' AS BLOB))
+----
+text
+integer
+real
+blob
+

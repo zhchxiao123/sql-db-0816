@@ -1,0 +1,51 @@
+# func4.test — 自动生成:期望值由 sqlite3 3.46.1 产出
+# 覆盖范围:类型/表达式/函数/LIKE/IN/NULL/collation(引擎范围内)
+
+query TTTT nosort
+SELECT printf('%d-%s', 5, 'x'), printf('%.2f', 3.14159), printf('%05d', 42), printf('%s %s', 'a', 'b')
+----
+5-x
+3.14
+00042
+a b
+
+query IIITT nosort
+SELECT abs(0), abs(0.0), length(0), substr('abc',1,1), replace('abc','b','X')
+----
+0
+0
+1
+a
+aXc
+
+query IIITT nosort
+SELECT length(3.14), length(1234567890123), instr('abc','a'), upper('x'), lower('X')
+----
+4
+13
+1
+X
+x
+
+query TTI nosort
+SELECT substr('hello world', 7), substr('hello world', 1, 5), instr('hello world', 'o')
+----
+world
+hello
+5
+
+query RRR nosort
+SELECT round(1.005, 2), round(2.675, 2), round(1234567.891, 2)
+----
+1.000
+2.670
+1234567.890
+
+query TTIR nosort
+SELECT min('a', 'b'), max('a', 'b'), min(10, 2.5), max(10, 2.5)
+----
+a
+b
+2
+10.000
+

@@ -1,0 +1,93 @@
+# null.test — 自动生成:期望值由 sqlite3 3.46.1 产出
+# 覆盖范围:类型/表达式/函数/LIKE/IN/NULL/collation(引擎范围内)
+
+statement ok
+CREATE TABLE t (a INTEGER, b TEXT)
+
+statement ok
+INSERT INTO t VALUES(1,'x'),(2,'y'),(NULL,'z'),(NULL,NULL)
+
+query I rowsort
+SELECT a FROM t WHERE a ORDER BY a
+----
+1
+2
+
+query I rowsort
+SELECT a FROM t WHERE NOT a ORDER BY a
+----
+
+query I nosort
+SELECT a FROM t WHERE a IS NULL ORDER BY rowid
+----
+NULL
+NULL
+
+query I rowsort
+SELECT a FROM t WHERE a IS NOT NULL ORDER BY a
+----
+1
+2
+
+query T nosort
+SELECT b FROM t WHERE b IS NULL ORDER BY rowid
+----
+NULL
+
+query IT nosort
+SELECT a, b FROM t WHERE a IS NULL ORDER BY rowid
+----
+NULL
+z
+NULL
+NULL
+
+query IIIII nosort
+SELECT 1 AND NULL, 0 AND NULL, NULL OR 1, NULL OR 0, NULL OR NULL
+----
+NULL
+0
+1
+NULL
+NULL
+
+query IIIIII nosort
+SELECT NOT NULL, NOT 1, NOT 0, NULL = NULL, NULL < 1, NULL > 1
+----
+NULL
+0
+1
+NULL
+NULL
+NULL
+
+query IIII nosort
+SELECT 1 IS NULL, NULL IS NULL, 1 IS NOT NULL, NULL IS NOT NULL
+----
+0
+1
+1
+0
+
+query IIIII nosort
+SELECT NULL + 1, NULL - 1, NULL * 2, NULL / 2, NULL || 'a'
+----
+NULL
+NULL
+NULL
+NULL
+NULL
+
+query ITT nosort
+SELECT coalesce(NULL, NULL, 3), ifnull(NULL, 'x'), nullif(NULL, NULL)
+----
+3
+x
+NULL
+
+query II nosort
+SELECT CASE WHEN NULL THEN 1 ELSE 2 END, CASE NULL WHEN NULL THEN 1 ELSE 2 END
+----
+2
+2
+

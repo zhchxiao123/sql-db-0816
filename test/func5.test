@@ -1,0 +1,88 @@
+# func5.test — 自动生成:期望值由 sqlite3 3.46.1 产出
+# 覆盖范围:类型/表达式/函数/LIKE/IN/NULL/collation(引擎范围内)
+
+statement ok
+CREATE TABLE t (a INTEGER, b TEXT, c REAL)
+
+statement ok
+INSERT INTO t VALUES(1, 'hello', 2.5), (-2, 'WORLD', -1.5), (3, 'AbC', 0.0)
+
+query ITTTT nosort
+SELECT abs(a), upper(b), lower(b), length(b), round(c) FROM t ORDER BY a
+----
+2
+WORLD
+world
+5
+-2.0
+1
+HELLO
+hello
+5
+3.0
+3
+ABC
+abc
+3
+0.0
+
+query I nosort
+SELECT abs(a) FROM t WHERE abs(a) > 1 ORDER BY a
+----
+2
+3
+
+query T nosort
+SELECT substr(b, 1, 2) FROM t ORDER BY a
+----
+WO
+he
+Ab
+
+query IRI nosort
+SELECT coalesce(a, 0), ifnull(c, 1.0), min(a, 2) FROM t ORDER BY a
+----
+-2
+-1.500
+-2
+1
+2.500
+1
+3
+0.000
+2
+
+query I nosort
+SELECT a FROM t ORDER BY abs(a)
+----
+1
+-2
+3
+
+query TTT nosort
+SELECT typeof(b), typeof(c), b || '!' FROM t ORDER BY a
+----
+text
+real
+WORLD!
+text
+real
+hello!
+text
+real
+AbC!
+
+query I nosort
+SELECT a FROM t WHERE length(b) >= 5 ORDER BY a
+----
+-2
+1
+
+query IIRR nosort
+SELECT max(a), min(a), max(c), min(c) FROM t
+----
+3
+-2
+2.500
+-1.500
+

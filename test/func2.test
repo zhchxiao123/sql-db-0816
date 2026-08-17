@@ -1,0 +1,69 @@
+# func2.test — 自动生成:期望值由 sqlite3 3.46.1 产出
+# 覆盖范围:类型/表达式/函数/LIKE/IN/NULL/collation(引擎范围内)
+
+query IITTIT nosort
+SELECT min(3,1,2), max(3,1,2), min('a','b','c'), max('a','b'), min(1,'2'), max(1,'2')
+----
+1
+3
+a
+b
+1
+2
+
+query IIII nosort
+SELECT min(NULL,1), max(NULL,1), min(2.5,1), min(1,2)
+----
+NULL
+NULL
+1
+1
+
+query RRRRRR nosort
+SELECT round(3.14159), round(3.14159,2), round(2.5), round(-2.5), round(3.5), round(-3.5)
+----
+3.000
+3.140
+3.000
+-3.000
+4.000
+-4.000
+
+query RRRRRI nosort
+SELECT round(1234.5678,2), round(15,-1), round(3.14159,-1), round(0.5), round(-0.5), round(NULL)
+----
+1234.570
+15.000
+3.000
+1.000
+-1.000
+NULL
+
+query TTTTTT nosort
+SELECT typeof(1), typeof(1.5), typeof('x'), typeof(X'41'), typeof(NULL), typeof(CAST(1 AS TEXT))
+----
+integer
+real
+text
+blob
+null
+text
+
+query TTTTTT nosort
+SELECT quote('a''b'), quote(NULL), quote(X'4142'), quote(12.5), quote(123), quote('')
+----
+'a''b'
+NULL
+X'4142'
+12.5
+123
+''
+
+query IITT nosort
+SELECT min(1,2,3,4,5), max(1,2,3,4,5), min('a','A','b'), max('a','A','b')
+----
+1
+5
+A
+b
+

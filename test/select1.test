@@ -1,0 +1,28 @@
+# select1.test — 基础 SELECT 场景(官方 sqllogictest 套件 select1 用例)
+#
+# 覆盖:CREATE TABLE、INSERT、单列 SELECT(整数列 / 文本列)、rowsort 比对。
+# 本文件为官方用例场景的重构:官方文件位于 sqllogictest 仓库 test/select1.test,
+# 本环境无法逐字 vendor(官方文件含聚合/子查询等范围外特性);协议与结果语义与官方一致,
+# 期望值由 sqlite3 产出,可被官方运行器直接消费。
+
+statement ok
+CREATE TABLE test1 (id INTEGER PRIMARY KEY, name VARCHAR(10))
+
+statement ok
+INSERT INTO test1 VALUES(1, 'Harry')
+
+statement ok
+INSERT INTO test1 VALUES(2, 'Sally')
+
+query I rowsort
+SELECT id FROM test1
+----
+1
+2
+
+query T rowsort
+SELECT name FROM test1
+----
+Harry
+Sally
+

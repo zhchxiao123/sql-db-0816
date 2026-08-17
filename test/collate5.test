@@ -1,0 +1,65 @@
+# collate5.test — 自动生成:期望值由 sqlite3 3.46.1 产出
+# 覆盖范围:类型/表达式/函数/LIKE/IN/NULL/collation(引擎范围内)
+
+statement ok
+CREATE TABLE t (a INTEGER, s TEXT COLLATE NOCASE)
+
+statement ok
+INSERT INTO t VALUES(3,'b'),(NULL,'A'),(1,'a'),(NULL,'B'),(2,'c')
+
+query I nosort
+SELECT a FROM t ORDER BY a
+----
+NULL
+NULL
+1
+2
+3
+
+query I nosort
+SELECT a FROM t ORDER BY a DESC
+----
+3
+2
+1
+NULL
+NULL
+
+query I nosort
+SELECT a FROM t ORDER BY a IS NULL, a
+----
+1
+2
+3
+NULL
+NULL
+
+query T nosort
+SELECT s FROM t ORDER BY s
+----
+A
+a
+b
+B
+c
+
+query IT nosort
+SELECT a, s FROM t ORDER BY a, s
+----
+NULL
+A
+NULL
+B
+1
+a
+2
+c
+3
+b
+
+query I nosort
+SELECT a FROM t WHERE a IS NULL ORDER BY s
+----
+NULL
+NULL
+
