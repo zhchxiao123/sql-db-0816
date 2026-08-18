@@ -1,0 +1,78 @@
+# cast.test — 自动生成:期望值由 sqlite3 3.46.1 产出
+# 覆盖范围:类型/表达式/函数/LIKE/IN/NULL/collation(引擎范围内)
+
+query IT nosort
+SELECT CAST('123' AS INTEGER), typeof(CAST('123' AS INTEGER))
+----
+123
+integer
+
+query III nosort
+SELECT CAST('12.5' AS INTEGER), CAST('abc' AS INTEGER), CAST('12.7' AS INTEGER)
+----
+12
+0
+12
+
+query III nosort
+SELECT CAST('-12.7' AS INTEGER), CAST(' 42 ' AS INTEGER), CAST('4.2e1' AS INTEGER)
+----
+-12
+42
+4
+
+query RRR nosort
+SELECT CAST('123' AS REAL), CAST('abc' AS REAL), CAST(12 AS REAL)
+----
+123.000
+0.000
+12.000
+
+query TTT nosort
+SELECT CAST(123 AS TEXT), CAST(12.5 AS TEXT), CAST(1.0 AS TEXT)
+----
+123
+12.5
+1.0
+
+query TTT nosort
+SELECT CAST(X'4142' AS TEXT), CAST('abc' AS BLOB), CAST(1 AS BLOB)
+----
+AB
+abc
+1
+
+query ITIT nosort
+SELECT CAST('1.0' AS NUMERIC), typeof(CAST('1.0' AS NUMERIC)), CAST(1.9 AS NUMERIC), typeof(CAST(1.9 AS NUMERIC))
+----
+1
+integer
+1
+real
+
+query IT nosort
+SELECT CAST(NULL AS INTEGER), CAST(NULL AS TEXT)
+----
+NULL
+NULL
+
+query TTT nosort
+SELECT CAST(1e16 AS TEXT), CAST(5e-5 AS TEXT), CAST(0.1+0.2 AS TEXT)
+----
+1.0e+16
+5.0e-05
+0.3
+
+query IR nosort
+SELECT CAST(X'31' AS INTEGER), CAST(X'31322E35' AS REAL)
+----
+1
+12.500
+
+query III nosort
+SELECT CAST('12abc' AS INTEGER), CAST(' 12 ' AS INTEGER), CAST('0x10' AS INTEGER)
+----
+12
+12
+0
+

@@ -1,0 +1,43 @@
+# collate3.test — 自动生成:期望值由 sqlite3 3.46.1 产出
+# 覆盖范围:类型/表达式/函数/LIKE/IN/NULL/collation(引擎范围内)
+
+statement ok
+CREATE TABLE t (s TEXT COLLATE RTRIM, p TEXT)
+
+statement ok
+INSERT INTO t VALUES('abc  ','abc  '),('abc','abc'),('a b ','a b ')
+
+query T nosort
+SELECT s FROM t WHERE s = 'abc' ORDER BY rowid
+----
+abc  
+abc
+
+query T nosort
+SELECT p FROM t WHERE p = 'abc' ORDER BY rowid
+----
+abc
+
+query T nosort
+SELECT s FROM t WHERE s = 'abc  ' ORDER BY rowid
+----
+abc  
+abc
+
+query T nosort
+SELECT s FROM t ORDER BY s
+----
+a b 
+abc  
+abc
+
+query II nosort
+SELECT s = 'abc', p = 'abc' FROM t ORDER BY rowid
+----
+1
+0
+1
+1
+0
+0
+

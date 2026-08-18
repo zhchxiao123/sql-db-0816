@@ -1,0 +1,125 @@
+# like.test — 自动生成:期望值由 sqlite3 3.46.1 产出
+# 覆盖范围:类型/表达式/函数/LIKE/IN/NULL/collation(引擎范围内)
+
+statement ok
+CREATE TABLE t (s TEXT)
+
+statement ok
+INSERT INTO t VALUES('hello'),('Hello'),('world'),('abc123'),('a_c'),('x%y')
+
+query T rowsort
+SELECT s FROM t WHERE s LIKE 'h%' ORDER BY s
+----
+Hello
+hello
+
+query T rowsort
+SELECT s FROM t WHERE s LIKE '%o%' ORDER BY s
+----
+Hello
+hello
+world
+
+query T rowsort
+SELECT s FROM t WHERE s LIKE 'h_llo' ORDER BY s
+----
+Hello
+hello
+
+query T rowsort
+SELECT s FROM t WHERE s LIKE 'A%' ORDER BY s
+----
+a_c
+abc123
+
+query T rowsort
+SELECT s FROM t WHERE s LIKE 'a\_c' ESCAPE '\' ORDER BY s
+----
+a_c
+
+query T rowsort
+SELECT s FROM t WHERE s LIKE '%\%%' ESCAPE '\' ORDER BY s
+----
+x%y
+
+query T rowsort
+SELECT s FROM t WHERE s NOT LIKE 'h%' ORDER BY s
+----
+a_c
+abc123
+world
+x%y
+
+query T rowsort
+SELECT s FROM t WHERE s GLOB 'h*' ORDER BY s
+----
+hello
+
+query T rowsort
+SELECT s FROM t WHERE s GLOB 'h?' ORDER BY s
+----
+
+query T rowsort
+SELECT s FROM t WHERE s GLOB '[a-c]*' ORDER BY s
+----
+a_c
+abc123
+
+query T rowsort
+SELECT s FROM t WHERE s GLOB 'A*' ORDER BY s
+----
+
+query T rowsort
+SELECT s FROM t WHERE s GLOB 'a?c' ORDER BY s
+----
+a_c
+
+query IIIII nosort
+SELECT 'hello' LIKE 'h%', 'Hello' LIKE 'hello', 'abc' LIKE 'a_c', 123 LIKE '1%', 1.5 LIKE '1.%'
+----
+1
+1
+1
+1
+1
+
+query III nosort
+SELECT 'a_c' LIKE 'a\_c' ESCAPE '\', 'x%y' LIKE '%\%%' ESCAPE '\', '%' LIKE '%' ESCAPE '%'
+----
+1
+1
+0
+
+query IIII nosort
+SELECT NULL LIKE 'h%', 'hello' LIKE NULL, 'aä' LIKE 'Aä', 'Ä' LIKE 'ä'
+----
+NULL
+NULL
+1
+0
+
+query IIIII nosort
+SELECT 'abc' GLOB 'a*', 'abc' GLOB 'A*', 'abc' GLOB 'a?c', 'abc' GLOB 'a??', 'abc' GLOB '[ab]bc'
+----
+1
+0
+1
+1
+1
+
+query IIII nosort
+SELECT 'a' GLOB '[a-z]', 'A' GLOB '[a-z]', 'b' GLOB '[^a]', 'a' GLOB '[^a]'
+----
+1
+0
+1
+0
+
+query IIII nosort
+SELECT 'abc' LIKE 'ABC', 'ABC' LIKE 'abc', 'abc' GLOB 'ABC', 'abc' GLOB 'a*' COLLATE NOCASE
+----
+1
+1
+0
+1
+

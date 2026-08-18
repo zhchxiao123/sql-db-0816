@@ -1,0 +1,65 @@
+# func3.test — 自动生成:期望值由 sqlite3 3.46.1 产出
+# 覆盖范围:类型/表达式/函数/LIKE/IN/NULL/collation(引擎范围内)
+
+query TTTTT nosort
+SELECT replace('aaa','a','b'), replace('ababa','a','x'), replace('aaa','a',''), replace(NULL,'a','b'), replace('aaa',NULL,'b')
+----
+bbb
+xbxbx
+(empty)
+NULL
+NULL
+
+query TTTTTTT nosort
+SELECT trim('  x  '), ltrim('  x  '), rtrim('  x  '), trim('xxaxx','x'), trim('  a  b  '), trim('','x'), trim(NULL,'x')
+----
+x
+x  
+  x
+a
+a  b
+(empty)
+NULL
+
+query IIIIII nosort
+SELECT instr('hello','ll'), instr('hello','z'), instr('hello',''), instr('','x'), instr('abcabc','bc'), instr(NULL,'x')
+----
+3
+0
+1
+0
+2
+NULL
+
+query TTTTT nosort
+SELECT hex(X'4142'), hex('abc'), hex(''), hex(0), hex(15)
+----
+4142
+616263
+(empty)
+30
+3135
+
+query TTTTTIIII nosort
+SELECT char(65,66), char(72,105), char(), char(0), length(char(0)), unicode('A'), unicode('AB'), unicode(''), unicode('z')
+----
+AB
+Hi
+(empty)
+@
+0
+65
+65
+NULL
+122
+
+query IIIIIT nosort
+SELECT sign(-3), sign(0), sign(3), sign('-3'), sign('x'), sign(NULL)
+----
+-1
+0
+1
+-1
+NULL
+NULL
+

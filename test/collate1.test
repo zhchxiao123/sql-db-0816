@@ -1,0 +1,43 @@
+# collate1.test — 自动生成:期望值由 sqlite3 3.46.1 产出
+# 覆盖范围:类型/表达式/函数/LIKE/IN/NULL/collation(引擎范围内)
+
+statement ok
+CREATE TABLE t (s TEXT COLLATE NOCASE)
+
+statement ok
+INSERT INTO t VALUES('apple'),('Banana'),('cherry'),('Apple'),('banana')
+
+query T nosort
+SELECT s FROM t ORDER BY s
+----
+apple
+Apple
+Banana
+banana
+cherry
+
+query T nosort
+SELECT s FROM t WHERE s = 'APPLE' ORDER BY rowid
+----
+apple
+Apple
+
+query T nosort
+SELECT s FROM t WHERE s = 'apple' ORDER BY rowid
+----
+apple
+Apple
+
+query T nosort
+SELECT s FROM t WHERE s < 'banana' ORDER BY s
+----
+apple
+Apple
+
+query T nosort
+SELECT s FROM t WHERE s >= 'BANANA' ORDER BY s
+----
+Banana
+banana
+cherry
+

@@ -1,0 +1,57 @@
+# expr3.test — 自动生成:期望值由 sqlite3 3.46.1 产出
+# 覆盖范围:类型/表达式/函数/LIKE/IN/NULL/collation(引擎范围内)
+
+query TTT nosort
+SELECT CASE WHEN 1 THEN 'a' ELSE 'b' END, CASE WHEN 0 THEN 'a' ELSE 'b' END, CASE WHEN NULL THEN 'a' ELSE 'b' END
+----
+a
+b
+b
+
+query TTT nosort
+SELECT CASE WHEN 1 THEN 'a' END, CASE WHEN NULL THEN 1 END, CASE WHEN 0 THEN 1 END
+----
+a
+NULL
+NULL
+
+query TI nosort
+SELECT CASE 2 WHEN 1 THEN 'a' WHEN 2 THEN 'b' ELSE 'c' END, CASE 'x' WHEN 'y' THEN 1 WHEN 'x' THEN 2 END
+----
+b
+2
+
+query TI nosort
+SELECT CASE 1 WHEN 1 THEN 'a' WHEN 1 THEN 'b' END, CASE WHEN 1 THEN 1 WHEN 0 THEN 2 ELSE 3 END
+----
+a
+1
+
+query TII nosort
+SELECT CASE WHEN 1 THEN NULL END, CASE 'a' COLLATE NOCASE WHEN 'A' THEN 1 ELSE 0 END, CASE 'a' WHEN 'A' THEN 1 ELSE 0 END
+----
+NULL
+1
+0
+
+query IIIII nosort
+SELECT 1 BETWEEN 0 AND 2, 3 BETWEEN 1 AND 2, NULL BETWEEN 1 AND 2, 1 BETWEEN NULL AND 2, 2 BETWEEN 2 AND 1
+----
+1
+0
+NULL
+NULL
+0
+
+query III nosort
+SELECT 1 NOT BETWEEN 0 AND 2, 1 NOT BETWEEN 1 AND 1, 'b' BETWEEN 'a' AND 'c'
+----
+0
+0
+1
+
+query I nosort
+SELECT CASE WHEN 1 THEN 1+1 WHEN 0 THEN 2*3 ELSE 4/2 END
+----
+2
+

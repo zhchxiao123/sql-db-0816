@@ -1,0 +1,78 @@
+# func1.test — 自动生成:期望值由 sqlite3 3.46.1 产出
+# 覆盖范围:类型/表达式/函数/LIKE/IN/NULL/collation(引擎范围内)
+
+query IRRIRR nosort
+SELECT abs(-5), abs(5), abs(-5.5), abs(NULL), abs('-5'), abs('abc')
+----
+5
+5.000
+5.500
+NULL
+5.000
+0.000
+
+query IIIIIII nosort
+SELECT length('abc'), length(NULL), length(12345), length(''), length(3.14), length(X'414243'), length(X'')
+----
+3
+NULL
+5
+0
+4
+3
+0
+
+query TTTTT nosort
+SELECT substr('hello',2), substr('hello',2,3), substr('hello',-2), substr('hello',0), substr('hello',-3)
+----
+ello
+ell
+lo
+hello
+llo
+
+query TTTTTT nosort
+SELECT substr('hello',99), substr('hello',-99), substr('hello',2,99), substr('hello',2,-1), substr('hello',-3,2), substr(NULL,1)
+----
+(empty)
+hello
+ello
+h
+ll
+NULL
+
+query ITITT nosort
+SELECT coalesce(NULL,1), coalesce(NULL,NULL,'x'), coalesce(1,2), coalesce(NULL,NULL,NULL), coalesce(NULL,'a')
+----
+1
+x
+1
+NULL
+a
+
+query IIIITT nosort
+SELECT ifnull(NULL,7), ifnull(3,7), ifnull(NULL,NULL), nullif(1,1), nullif(1,2), nullif('a','a')
+----
+7
+3
+NULL
+NULL
+1
+NULL
+
+query TTTTTT nosort
+SELECT upper('abc'), lower('ABC'), upper('aBc123'), upper(''), lower(''), upper('ä')
+----
+ABC
+abc
+ABC123
+(empty)
+(empty)
+@
+
+query TI nosort
+SELECT upper(X'61'), length(upper(X'61'))
+----
+A
+1
+

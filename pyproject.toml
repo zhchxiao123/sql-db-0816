@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sql-db-0816"
+version = "0.3.0"
+description = "SQL engine with sqlite-compatible type system & expression evaluation + sqllogictest runner (sql-db-0816)"
+requires-python = ">=3.9"
+# 纯标准库实现,无第三方运行时依赖
+
+[project.scripts]
+sql-db-sqllogictest = "sql_db_0816.sqllogictest:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
